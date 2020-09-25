@@ -120,7 +120,7 @@ class RestAPI {
       apiResponse = _returnResponse(response);
     } on SocketException {
       print('No net');
-      throw FetchDataException('No Internet connection');
+      throw ('No Internet connection');
     }
     print('api delete.');
     return apiResponse;
