@@ -3,53 +3,49 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moonlight_test/config/theme.dart';
 import 'package:moonlight_test/data/GlobalData.dart';
 import 'package:moonlight_test/presentation/bloc/user_detail_bloc.dart';
-import 'package:moonlight_test/presentation/user_details/user_albums.dart';
-import 'package:moonlight_test/presentation/user_details/user_posts.dart';
-import 'package:moonlight_test/presentation/user_details/user_todos.dart';
 import 'package:moonlight_test/presentation/widgets/custom_button.dart';
 import 'package:moonlight_test/presentation/widgets/get_appbar.dart';
-import 'package:moonlight_test/presentation/widgets/pushNamed.dart';
 
-import '../../config/theme.dart';
+class UserPosts extends StatefulWidget {
+  static String route = 'userPost';
 
-class UserDetailList extends StatefulWidget {
-  static String route = 'userList';
 
   @override
-  _UserDetailListState createState() => _UserDetailListState();
+  _UserPostsState createState() => _UserPostsState();
 }
 
-class _UserDetailListState extends State<UserDetailList> {
+class _UserPostsState extends State<UserPosts> {
   UserFeedBloc _userFeedBloc;
 
   @override
   void initState() {
     _userFeedBloc = UserFeedBloc();
+
     _userFeedBloc.add(LoadUserFeed());
     super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
     var _theme = AppTheme.of(context);
 
+
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: getAppBar(context, title: 'User Details'),
+        appBar:getAppBar(context,title: 'Posts'),
         body: BlocBuilder(
             bloc: _userFeedBloc,
             builder: (context, state) {
               if (state is UserFeedLoaded || state is InitialUserFeedState)
                 return ListView.separated(
-                  itemCount: GlobalData.userDetailModel?.length ?? 0,
+                  itemCount: GlobalData.userDetailModel?.length??0,
                   itemBuilder: (context, index) {
                     return ExpansionTile(
-                      childrenPadding:
-                          EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                      childrenPadding: EdgeInsets.symmetric(horizontal: 30,vertical: 10),
                       backgroundColor: AppColors.lightGray,
                       title: Card(
                         elevation: 2.0,
                         color: AppColors.white,
+
                         child: Container(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -90,19 +86,17 @@ class _UserDetailListState extends State<UserDetailList> {
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
                           children: [
                             CustomButton(
+
                               child: Text(
                                 'Posts',
                                 style: _theme.textTheme.button
                                     .copyWith(color: AppColors.white),
                               ),
                               shape: ButtonType.BUTTON_ROUND,
-                              onPressed: () {
-                                pushNamed(
-                                    context: context,
-                                    routeName: UserPosts.route);
-                              },
+                              onPressed: () {},
                               width: 60,
                               height: 70,
                             ),
@@ -113,11 +107,7 @@ class _UserDetailListState extends State<UserDetailList> {
                                       .copyWith(color: AppColors.white),
                                 ),
                                 shape: ButtonType.BUTTON_ROUND,
-                                onPressed: () {
-                                  pushNamed(
-                                      context: context,
-                                      routeName: UserAlbums.route);
-                                },
+                                onPressed: () {},
                                 width: 60,
                                 height: 70,
                                 gradient: LinearGradient(colors: <Color>[
@@ -131,11 +121,7 @@ class _UserDetailListState extends State<UserDetailList> {
                                       .copyWith(color: AppColors.white),
                                 ),
                                 shape: ButtonType.BUTTON_ROUND,
-                                onPressed: () {
-                                  pushNamed(
-                                      context: context,
-                                      routeName: UserTodos.route);
-                                },
+                                onPressed: () {},
                                 width: 60,
                                 height: 70,
                                 gradient: LinearGradient(colors: <Color>[
@@ -153,6 +139,5 @@ class _UserDetailListState extends State<UserDetailList> {
                 );
               else
                 return CircularProgressIndicator();
-            }));
-  }
+            }));  }
 }
