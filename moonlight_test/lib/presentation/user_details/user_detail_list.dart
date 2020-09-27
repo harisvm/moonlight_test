@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moonlight_test/config/theme.dart';
 import 'package:moonlight_test/data/GlobalData.dart';
+import 'package:moonlight_test/data/models/user_detail_model.dart';
 import 'package:moonlight_test/presentation/bloc/user_detail_bloc.dart';
 import 'package:moonlight_test/presentation/user_details/user_albums.dart';
 import 'package:moonlight_test/presentation/user_details/user_posts.dart';
 import 'package:moonlight_test/presentation/user_details/user_todos.dart';
+import 'package:moonlight_test/presentation/widgets/circular_progress.dart';
 import 'package:moonlight_test/presentation/widgets/custom_button.dart';
 import 'package:moonlight_test/presentation/widgets/get_appbar.dart';
 import 'package:moonlight_test/presentation/widgets/pushNamed.dart';
@@ -25,7 +27,7 @@ class _UserDetailListState extends State<UserDetailList> {
   @override
   void initState() {
     _userFeedBloc = UserFeedBloc();
-    _userFeedBloc.add(LoadUserFeed());
+    _userFeedBloc.add(LoadUsersList());
     super.initState();
   }
 
@@ -39,10 +41,12 @@ class _UserDetailListState extends State<UserDetailList> {
         body: BlocBuilder(
             bloc: _userFeedBloc,
             builder: (context, state) {
-              if (state is UserFeedLoaded || state is InitialUserFeedState)
+              if (state is UsersListLoaded ||
+                  state is InitialUserFeedState) {
                 return ListView.separated(
-                  itemCount: GlobalData.userDetailModel?.length ?? 0,
+                  itemCount: GlobalData.userDetailList?.length ?? 0,
                   itemBuilder: (context, index) {
+                    Address address =    GlobalData.userDetailList[index].address ;
                     return ExpansionTile(
                       childrenPadding:
                           EdgeInsets.symmetric(horizontal: 30, vertical: 10),
@@ -58,7 +62,7 @@ class _UserDetailListState extends State<UserDetailList> {
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  GlobalData.userDetailModel[index].name,
+                                  GlobalData.userDetailList[index].name,
                                   style: _theme.textTheme.bodyText1.copyWith(
                                       color: AppColors.black,
                                       fontWeight: FontWeight.bold),
@@ -67,7 +71,7 @@ class _UserDetailListState extends State<UserDetailList> {
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  GlobalData.userDetailModel[index].email,
+                                  GlobalData.userDetailList[index].email,
                                   style: _theme.textTheme.bodyText2.copyWith(
                                     color: AppColors.purple,
                                   ),
@@ -76,10 +80,9 @@ class _UserDetailListState extends State<UserDetailList> {
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  GlobalData
-                                      .userDetailModel[index].address.city,
+                                  address.city+" \n"+address.street +" \n"+address.zipcode,
                                   style: _theme.textTheme.bodyText2.copyWith(
-                                    color: AppColors.red,
+                                    color: AppColors.darkGray,
                                   ),
                                 ),
                               ),
@@ -89,8 +92,9 @@ class _UserDetailListState extends State<UserDetailList> {
                       ),
                       children: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
+
                             CustomButton(
                               child: Text(
                                 'Posts',
@@ -99,6 +103,8 @@ class _UserDetailListState extends State<UserDetailList> {
                               ),
                               shape: ButtonType.BUTTON_ROUND,
                               onPressed: () {
+                                GlobalData.userId =
+                                    GlobalData.userDetailList[index].id;
                                 pushNamed(
                                     context: context,
                                     routeName: UserPosts.route);
@@ -106,6 +112,8 @@ class _UserDetailListState extends State<UserDetailList> {
                               width: 60,
                               height: 70,
                             ),
+
+                            Spacer(),
                             CustomButton(
                                 child: Text(
                                   'Albums',
@@ -114,6 +122,8 @@ class _UserDetailListState extends State<UserDetailList> {
                                 ),
                                 shape: ButtonType.BUTTON_ROUND,
                                 onPressed: () {
+                                  GlobalData.userId =
+                                      GlobalData.userDetailList[index].id;
                                   pushNamed(
                                       context: context,
                                       routeName: UserAlbums.route);
@@ -124,6 +134,8 @@ class _UserDetailListState extends State<UserDetailList> {
                                   AppColors.success,
                                   AppColors.success
                                 ])),
+                            Spacer(),
+
                             CustomButton(
                                 child: Text(
                                   'To Do',
@@ -132,6 +144,8 @@ class _UserDetailListState extends State<UserDetailList> {
                                 ),
                                 shape: ButtonType.BUTTON_ROUND,
                                 onPressed: () {
+                                  GlobalData.userId =
+                                      GlobalData.userDetailList[index].id;
                                   pushNamed(
                                       context: context,
                                       routeName: UserTodos.route);
@@ -142,6 +156,8 @@ class _UserDetailListState extends State<UserDetailList> {
                                   AppColors.orange,
                                   AppColors.orange
                                 ])),
+                            Spacer(),
+
                           ],
                         ),
                       ],
@@ -151,8 +167,10 @@ class _UserDetailListState extends State<UserDetailList> {
                     return Divider();
                   },
                 );
-              else
-                return CircularProgressIndicator();
+              } else if (state is LoadData) {
+                return Center(child: showCircleProgress());
+              } else
+                return Container(child: Center(child: Text('Something went wrong'),),);
             }));
   }
 }

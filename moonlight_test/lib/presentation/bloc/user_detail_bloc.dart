@@ -16,16 +16,91 @@ class UserFeedBloc extends Bloc<UserFeedEvent, UserFeedState> {
   ) async* {
     yield InitialUserFeedState();
 
-    if (event is LoadUserFeed) {
+    ///loading main page
+    if (event is LoadUsersList) {
+      yield LoadData();
       try {
-        GlobalData.userDetailModel = await Repository().getUserDetails();
+        GlobalData.userDetailList = await Repository().getUserDetails();
 
-        yield UserFeedLoaded();
+        yield UsersListLoaded();
       } catch (e) {
         print('---e---$e');
 
         yield CommonErrorState();
+      }
+    }
 
+    ///loading posts page
+    if (event is LoadPostsByUsers) {
+      yield LoadData();
+
+      try {
+        GlobalData.postListByUser = await Repository().getUserPosts();
+
+        yield UserPostsLoaded();
+      } catch (e) {
+        print('---e---$e');
+
+        yield CommonErrorState();
+      }
+    }
+
+    ///load comments on posts
+
+    if (event is LoadCommentsOnPosts) {
+      yield LoadData();
+
+      try {
+        GlobalData.commentsOnPost = await Repository().getCommentsByPost();
+
+        yield CommentsOnPostLoaded();
+      } catch (e) {
+        print('---e---$e');
+
+        yield CommonErrorState();
+      }
+    }
+
+    ///load todos by user
+    if (event is LoadToDosList) {
+      yield LoadData();
+
+      try {
+        GlobalData.toDosByUser = await Repository().getToDosByUser();
+
+        yield TodosByUserLoaded();
+      } catch (e) {
+        print('---e---$e');
+
+        yield CommonErrorState();
+      }
+    }
+
+    ///load albums by user
+    if (event is LoadAlbumList) {
+      yield LoadData();
+
+      try {
+        GlobalData.albumsByUser = await Repository().getAlbumsByUsers();
+
+        yield AlbumListLoaded();
+      } catch (e) {
+        print('---e---$e');
+
+        yield CommonErrorState();
+      }
+    }    ///load photos by album
+    if (event is LoadPhotosByAlbums) {
+      yield LoadData();
+
+      try {
+        GlobalData.photosByAlbum = await Repository().getPhotosByAlbum();
+
+        yield PhotosByAlbumLoaded();
+      } catch (e) {
+        print('---e---$e');
+
+        yield CommonErrorState();
       }
     }
   }

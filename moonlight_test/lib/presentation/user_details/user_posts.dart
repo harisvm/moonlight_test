@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moonlight_test/config/theme.dart';
 import 'package:moonlight_test/data/GlobalData.dart';
+import 'package:moonlight_test/data/models/comments_on_posts_model.dart';
 import 'package:moonlight_test/presentation/bloc/user_detail_bloc.dart';
+import 'package:moonlight_test/presentation/user_details/user_albums.dart';
+import 'package:moonlight_test/presentation/user_details/user_todos.dart';
+import 'package:moonlight_test/presentation/widgets/circular_progress.dart';
 import 'package:moonlight_test/presentation/widgets/custom_button.dart';
 import 'package:moonlight_test/presentation/widgets/get_appbar.dart';
+import 'package:moonlight_test/presentation/widgets/pushNamed.dart';
 
 class UserPosts extends StatefulWidget {
   static String route = 'userPost';
-
 
   @override
   _UserPostsState createState() => _UserPostsState();
@@ -16,36 +20,53 @@ class UserPosts extends StatefulWidget {
 
 class _UserPostsState extends State<UserPosts> {
   UserFeedBloc _userFeedBloc;
+  bool isCommentClicked = false;
+  int clickedIndex;
 
   @override
   void initState() {
     _userFeedBloc = UserFeedBloc();
 
-    _userFeedBloc.add(LoadUserFeed());
+    _userFeedBloc.add(LoadPostsByUsers());
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     var _theme = AppTheme.of(context);
-
+    List<CommentsOnPostsModel> commentsOnPostLoaded = [];
 
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar:getAppBar(context,title: 'Posts'),
+        appBar: getAppBar(context, title: 'Posts'),
         body: BlocBuilder(
             bloc: _userFeedBloc,
             builder: (context, state) {
-              if (state is UserFeedLoaded || state is InitialUserFeedState)
+              if (state is UserPostsLoaded ||
+                  state is InitialUserFeedState ||
+                  state is CommentsOnPostLoaded) {
+                if (state is CommentsOnPostLoaded) {
+                  isCommentClicked = true;
+                }
+                print('state $state');
                 return ListView.separated(
-                  itemCount: GlobalData.userDetailModel?.length??0,
+                  itemCount: GlobalData.postListByUser?.length ?? 0,
                   itemBuilder: (context, index) {
                     return ExpansionTile(
-                      childrenPadding: EdgeInsets.symmetric(horizontal: 30,vertical: 10),
-                      backgroundColor: AppColors.lightGray,
+                      onExpansionChanged: (isExpanded) {
+                        clickedIndex = index;
+
+                        if (isExpanded) {
+                          GlobalData.postId =
+                              GlobalData.postListByUser[index].id;
+                          _userFeedBloc.add(LoadCommentsOnPosts());
+                        }
+                      },
+                      initiallyExpanded:
+                          isCommentClicked && index == clickedIndex,
                       title: Card(
                         elevation: 2.0,
                         color: AppColors.white,
-
                         child: Container(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -54,7 +75,7 @@ class _UserPostsState extends State<UserPosts> {
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  GlobalData.userDetailModel[index].name,
+                                  GlobalData.postListByUser[index].title,
                                   style: _theme.textTheme.bodyText1.copyWith(
                                       color: AppColors.black,
                                       fontWeight: FontWeight.bold),
@@ -63,19 +84,9 @@ class _UserPostsState extends State<UserPosts> {
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  GlobalData.userDetailModel[index].email,
+                                  GlobalData.postListByUser[index].body,
                                   style: _theme.textTheme.bodyText2.copyWith(
                                     color: AppColors.purple,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  GlobalData
-                                      .userDetailModel[index].address.city,
-                                  style: _theme.textTheme.bodyText2.copyWith(
-                                    color: AppColors.red,
                                   ),
                                 ),
                               ),
@@ -83,53 +94,62 @@ class _UserPostsState extends State<UserPosts> {
                           ),
                         ),
                       ),
+                      subtitle: IconButton(
+                        icon: Icon(Icons.comment),
+                      ),
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                          children: [
-                            CustomButton(
-
-                              child: Text(
-                                'Posts',
-                                style: _theme.textTheme.button
-                                    .copyWith(color: AppColors.white),
-                              ),
-                              shape: ButtonType.BUTTON_ROUND,
-                              onPressed: () {},
-                              width: 60,
-                              height: 70,
-                            ),
-                            CustomButton(
-                                child: Text(
-                                  'Albums',
-                                  style: _theme.textTheme.button
-                                      .copyWith(color: AppColors.white),
-                                ),
-                                shape: ButtonType.BUTTON_ROUND,
-                                onPressed: () {},
-                                width: 60,
-                                height: 70,
-                                gradient: LinearGradient(colors: <Color>[
-                                  AppColors.success,
-                                  AppColors.success
-                                ])),
-                            CustomButton(
-                                child: Text(
-                                  'To Do',
-                                  style: _theme.textTheme.button
-                                      .copyWith(color: AppColors.white),
-                                ),
-                                shape: ButtonType.BUTTON_ROUND,
-                                onPressed: () {},
-                                width: 60,
-                                height: 70,
-                                gradient: LinearGradient(colors: <Color>[
-                                  AppColors.orange,
-                                  AppColors.orange
-                                ])),
-                          ],
-                        ),
+                        BlocBuilder(
+                            bloc: _userFeedBloc,
+                            builder: (context, state) {
+                              if (state is CommentsOnPostLoaded) {
+                                return ListView.separated(
+                                  itemCount:
+                                      GlobalData.commentsOnPost.length > 3
+                                          ? 3
+                                          : GlobalData.commentsOnPost.length,
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) {
+                                    return Card(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.only(
+                                              bottomRight: Radius.circular(10),
+                                              topRight: Radius.circular(10)),
+                                          side: BorderSide(
+                                              width: 1, color: Colors.green)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                GlobalData.commentsOnPost[index]
+                                                    .email,
+                                                style: _theme.textTheme.caption
+                                                    .copyWith(
+                                                        color:
+                                                            AppColors.purple),
+                                              ),
+                                              Text(
+                                                GlobalData
+                                                    .commentsOnPost[index].body,
+                                                style: _theme.textTheme.caption
+                                                    .copyWith(
+                                                        color: AppColors.black),
+                                              ),
+                                            ]),
+                                      ),
+                                    );
+                                  },
+                                  separatorBuilder: (context, position) {
+                                    return Divider();
+                                  },
+                                );
+                              }
+                              return Center(child: showCircleProgress());
+                            }),
                       ],
                     );
                   },
@@ -137,7 +157,10 @@ class _UserPostsState extends State<UserPosts> {
                     return Divider();
                   },
                 );
-              else
-                return CircularProgressIndicator();
-            }));  }
+              } else if (state is LoadData) {
+                return Center(child: showCircleProgress());
+              } else
+                return Container(child: Center(child: Text('Something went wrong'),),);
+            }));
+  }
 }

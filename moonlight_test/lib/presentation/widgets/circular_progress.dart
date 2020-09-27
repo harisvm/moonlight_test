@@ -7,8 +7,8 @@ Widget showCircleProgress({double size = 30}) => Align(
     width: size,
     height: size,
     child: CircularProgressIndicator(
-      backgroundColor: AppColors.purpleLightHome,
-      valueColor: new AlwaysStoppedAnimation<Color>(AppColors.purpleLight1),
+      backgroundColor: AppColors.black,
+      valueColor: new AlwaysStoppedAnimation<Color>(AppColors.green),
     ),
   ),
 );

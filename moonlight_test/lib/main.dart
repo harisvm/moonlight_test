@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moonlight_test/presentation/user_details/album_photos.dart';
 import 'package:moonlight_test/presentation/user_details/user_albums.dart';
 import 'package:moonlight_test/presentation/user_details/user_detail_list.dart';
 import 'package:moonlight_test/presentation/user_details/user_posts.dart';
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
       UserAlbums.route: (context) => UserAlbums(),
       UserPosts.route: (context) => UserPosts(),
       UserTodos.route: (context) => UserTodos(),
+      AlbumPhotos.route: (context) => AlbumPhotos(),
 
     };
   }

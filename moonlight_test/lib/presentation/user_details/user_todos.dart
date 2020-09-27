@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moonlight_test/config/theme.dart';
 import 'package:moonlight_test/data/GlobalData.dart';
 import 'package:moonlight_test/presentation/bloc/user_detail_bloc.dart';
+import 'package:moonlight_test/presentation/widgets/circular_progress.dart';
 import 'package:moonlight_test/presentation/widgets/custom_button.dart';
 import 'package:moonlight_test/presentation/widgets/get_appbar.dart';
 
@@ -15,10 +16,11 @@ class UserTodos extends StatefulWidget {
 
 class _UserTodosState extends State<UserTodos> {
   UserFeedBloc _userFeedBloc;
+
   @override
   void initState() {
     _userFeedBloc = UserFeedBloc();
-    _userFeedBloc.add(LoadUserFeed());
+    _userFeedBloc.add(LoadToDosList());
     super.initState();
   }
 
@@ -26,120 +28,42 @@ class _UserTodosState extends State<UserTodos> {
   Widget build(BuildContext context) {
     var _theme = AppTheme.of(context);
 
-
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar:getAppBar(context,title: 'To Dos'),
+        appBar: getAppBar(context, title: 'To Dos'),
         body: BlocBuilder(
             bloc: _userFeedBloc,
             builder: (context, state) {
-              if (state is UserFeedLoaded || state is InitialUserFeedState)
+              if (state is TodosByUserLoaded || state is InitialUserFeedState) {
                 return ListView.separated(
-                  itemCount: GlobalData.userDetailModel?.length??0,
+                  itemCount: GlobalData.toDosByUser?.length ?? 0,
                   itemBuilder: (context, index) {
-                    return ExpansionTile(
-                      childrenPadding: EdgeInsets.symmetric(horizontal: 30,vertical: 10),
-                      backgroundColor: AppColors.lightGray,
-                      title: Card(
-                        elevation: 2.0,
-                        color: AppColors.white,
-
-                        child: Container(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  GlobalData.userDetailModel[index].name,
-                                  style: _theme.textTheme.bodyText1.copyWith(
-                                      color: AppColors.black,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  GlobalData.userDetailModel[index].email,
-                                  style: _theme.textTheme.bodyText2.copyWith(
-                                    color: AppColors.purple,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  GlobalData
-                                      .userDetailModel[index].address.city,
-                                  style: _theme.textTheme.bodyText2.copyWith(
-                                    color: AppColors.red,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Card(
+                        color: GlobalData.toDosByUser[index].completed
+                            ? AppColors.green
+                            : AppColors.lightGray,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(GlobalData.toDosByUser[index].title),
                         ),
                       ),
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                          children: [
-                            CustomButton(
-
-                              child: Text(
-                                'Posts',
-                                style: _theme.textTheme.button
-                                    .copyWith(color: AppColors.white),
-                              ),
-                              shape: ButtonType.BUTTON_ROUND,
-                              onPressed: () {},
-                              width: 60,
-                              height: 70,
-                            ),
-                            CustomButton(
-                                child: Text(
-                                  'Albums',
-                                  style: _theme.textTheme.button
-                                      .copyWith(color: AppColors.white),
-                                ),
-                                shape: ButtonType.BUTTON_ROUND,
-                                onPressed: () {},
-                                width: 60,
-                                height: 70,
-                                gradient: LinearGradient(colors: <Color>[
-                                  AppColors.success,
-                                  AppColors.success
-                                ])),
-                            CustomButton(
-                                child: Text(
-                                  'To Do',
-                                  style: _theme.textTheme.button
-                                      .copyWith(color: AppColors.white),
-                                ),
-                                shape: ButtonType.BUTTON_ROUND,
-                                onPressed: () {},
-                                width: 60,
-                                height: 70,
-                                gradient: LinearGradient(colors: <Color>[
-                                  AppColors.orange,
-                                  AppColors.orange
-                                ])),
-                          ],
-                        ),
-                      ],
                     );
                   },
                   separatorBuilder: (context, position) {
                     return Divider();
                   },
                 );
-              else
-                return CircularProgressIndicator();
+              } else if (state is LoadData) {
+                return Center(child: showCircleProgress());
+              }
+
+              return Container(
+                child: Center(
+                  child: Text('Something went wrong'),
+                ),
+              );
             }));
   }
 }
-
-
-
