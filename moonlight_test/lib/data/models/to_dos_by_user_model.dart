@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+///todolist for each users are received in this model
 List<TodosByUserModel> todosByUserModelFromMap(String str) => List<TodosByUserModel>.from(json.decode(str).map((x) => TodosByUserModel.fromMap(x)));
 
 String todosByUserModelToMap(List<TodosByUserModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toMap())));

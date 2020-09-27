@@ -8,6 +8,8 @@ import 'package:moonlight_test/presentation/widgets/circular_progress.dart';
 import 'package:moonlight_test/presentation/widgets/get_appbar.dart';
 import 'package:moonlight_test/presentation/widgets/pushNamed.dart';
 
+
+///albums showed in tiles
 class UserAlbums extends StatefulWidget {
   static const route = 'userAlbums';
 

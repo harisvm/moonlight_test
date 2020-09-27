@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+///album details of each users are received in this model
 List<AlbumsByUserModel> albumsByUserModelFromMap(String str) =>
     List<AlbumsByUserModel>.from(
         json.decode(str).map((x) => AlbumsByUserModel.fromMap(x)));

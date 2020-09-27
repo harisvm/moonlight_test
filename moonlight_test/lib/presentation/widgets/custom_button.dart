@@ -3,6 +3,7 @@ import 'package:moonlight_test/config/theme.dart';
 import 'package:moonlight_test/presentation/widgets/circular_progress.dart';
 import 'package:moonlight_test/presentation/widgets/show_toast.dart';
 
+///custom button
 enum ButtonType { FLAT, RAISED, BUTTON_ROUND, BUTTON_RRECT }
 
 class CustomButton extends StatefulWidget {

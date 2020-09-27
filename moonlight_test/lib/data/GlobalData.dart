@@ -4,8 +4,9 @@ import 'package:moonlight_test/data/models/photos_by_album_model.dart';
 import 'package:moonlight_test/data/models/posts_by_users_model.dart';
 import 'package:moonlight_test/data/models/to_dos_by_user_model.dart';
 import 'package:moonlight_test/data/models/user_detail_model.dart';
-import 'package:moonlight_test/presentation/bloc/user_detail_bloc.dart';
 
+
+///all the fields in this class are available globally through out the app
 class GlobalData {
   ///user details list - for main page
   static List<UserDetailModel> userDetailList = [];

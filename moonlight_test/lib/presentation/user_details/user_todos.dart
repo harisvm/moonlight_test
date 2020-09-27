@@ -4,17 +4,18 @@ import 'package:moonlight_test/config/theme.dart';
 import 'package:moonlight_test/data/GlobalData.dart';
 import 'package:moonlight_test/presentation/bloc/user_detail_bloc.dart';
 import 'package:moonlight_test/presentation/widgets/circular_progress.dart';
-import 'package:moonlight_test/presentation/widgets/custom_button.dart';
 import 'package:moonlight_test/presentation/widgets/get_appbar.dart';
 
-class UserTodos extends StatefulWidget {
+
+///todos list by users are shown in this page
+class UserToDos extends StatefulWidget {
   static String route = 'userTodos';
 
   @override
-  _UserTodosState createState() => _UserTodosState();
+  _UserToDosState createState() => _UserToDosState();
 }
 
-class _UserTodosState extends State<UserTodos> {
+class _UserToDosState extends State<UserToDos> {
   UserFeedBloc _userFeedBloc;
 
   @override

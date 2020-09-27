@@ -14,6 +14,8 @@ import 'package:moonlight_test/presentation/widgets/pushNamed.dart';
 
 import '../../config/theme.dart';
 
+
+///home page - user list is being shown here
 class UserDetailList extends StatefulWidget {
   static String route = 'userList';
 
@@ -148,7 +150,7 @@ class _UserDetailListState extends State<UserDetailList> {
                                       GlobalData.userDetailList[index].id;
                                   pushNamed(
                                       context: context,
-                                      routeName: UserTodos.route);
+                                      routeName: UserToDos.route);
                                 },
                                 width: 60,
                                 height: 70,

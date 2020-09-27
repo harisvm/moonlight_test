@@ -1,9 +1,7 @@
-// To parse this JSON data, do
-//
-//     final userDetailModel = userDetailModelFromMap(jsonString);
+
 
 import 'dart:convert';
-
+///home page data is received in this model ie:the details of all users
 List<UserDetailModel> userDetailModelFromMap(String str) => List<UserDetailModel>.from(json.decode(str).map((x) => UserDetailModel.fromMap(x)));
 
 String userDetailModelToMap(List<UserDetailModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toMap())));

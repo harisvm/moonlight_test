@@ -1,3 +1,5 @@
+
+///different data exceptions are caught here, which may occurred while an error during api call
 class RestException implements Exception {
   final prefix;
   final message;

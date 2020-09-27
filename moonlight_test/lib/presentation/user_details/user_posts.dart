@@ -1,16 +1,14 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moonlight_test/config/theme.dart';
 import 'package:moonlight_test/data/GlobalData.dart';
-import 'package:moonlight_test/data/models/comments_on_posts_model.dart';
 import 'package:moonlight_test/presentation/bloc/user_detail_bloc.dart';
-import 'package:moonlight_test/presentation/user_details/user_albums.dart';
-import 'package:moonlight_test/presentation/user_details/user_todos.dart';
 import 'package:moonlight_test/presentation/widgets/circular_progress.dart';
-import 'package:moonlight_test/presentation/widgets/custom_button.dart';
 import 'package:moonlight_test/presentation/widgets/get_appbar.dart';
-import 'package:moonlight_test/presentation/widgets/pushNamed.dart';
 
+///user posts are shown in this page
 class UserPosts extends StatefulWidget {
   static String route = 'userPost';
 
@@ -22,19 +20,20 @@ class _UserPostsState extends State<UserPosts> {
   UserFeedBloc _userFeedBloc;
   bool isCommentClicked = false;
   int clickedIndex;
-
+ScrollController _scrollController;
   @override
   void initState() {
     _userFeedBloc = UserFeedBloc();
 
     _userFeedBloc.add(LoadPostsByUsers());
     super.initState();
-  }
+    _scrollController = ScrollController(
+      initialScrollOffset: 0,
+    );  }
 
   @override
   Widget build(BuildContext context) {
     var _theme = AppTheme.of(context);
-    List<CommentsOnPostsModel> commentsOnPostLoaded = [];
 
     return Scaffold(
         backgroundColor: Colors.white,
@@ -50,7 +49,9 @@ class _UserPostsState extends State<UserPosts> {
                 }
                 print('state $state');
                 return ListView.separated(
+                  addAutomaticKeepAlives: true,
                   itemCount: GlobalData.postListByUser?.length ?? 0,
+                  controller: _scrollController,
                   itemBuilder: (context, index) {
                     return ExpansionTile(
                       onExpansionChanged: (isExpanded) {
@@ -111,11 +112,10 @@ class _UserPostsState extends State<UserPosts> {
                                   itemBuilder: (context, index) {
                                     return Card(
                                       shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.only(
-                                              bottomRight: Radius.circular(10),
-                                              topRight: Radius.circular(10)),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10.0)),
                                           side: BorderSide(
-                                              width: 1, color: Colors.green)),
+                                              width: 1, color: Colors.purple)),
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Column(
@@ -125,16 +125,19 @@ class _UserPostsState extends State<UserPosts> {
                                                 CrossAxisAlignment.center,
                                             children: [
                                               Text(
-                                                GlobalData.commentsOnPost[index]
-                                                    .email,
+                                                GlobalData
+                                                        ?.commentsOnPost[index]
+                                                        ?.email ??
+                                                    '',
                                                 style: _theme.textTheme.caption
                                                     .copyWith(
                                                         color:
                                                             AppColors.purple),
                                               ),
                                               Text(
-                                                GlobalData
-                                                    .commentsOnPost[index].body,
+                                                GlobalData.commentsOnPost[index]
+                                                        ?.body ??
+                                                    '',
                                                 style: _theme.textTheme.caption
                                                     .copyWith(
                                                         color: AppColors.black),
@@ -148,6 +151,7 @@ class _UserPostsState extends State<UserPosts> {
                                   },
                                 );
                               }
+
                               return Center(child: showCircleProgress());
                             }),
                       ],
@@ -160,7 +164,11 @@ class _UserPostsState extends State<UserPosts> {
               } else if (state is LoadData) {
                 return Center(child: showCircleProgress());
               } else
-                return Container(child: Center(child: Text('Something went wrong'),),);
+                return Container(
+                  child: Center(
+                    child: Text('Something went wrong'),
+                  ),
+                );
             }));
   }
 }

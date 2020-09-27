@@ -1,9 +1,6 @@
-// To parse this JSON data, do
-//
-//     final commentsOnPostsModel = commentsOnPostsModelFromMap(jsonString);
 
 import 'dart:convert';
-
+///comments done on each posts are received in this model class
 List<CommentsOnPostsModel> commentsOnPostsModelFromMap(String str) =>
     List<CommentsOnPostsModel>.from(
         json.decode(str).map((x) => CommentsOnPostsModel.fromMap(x)));

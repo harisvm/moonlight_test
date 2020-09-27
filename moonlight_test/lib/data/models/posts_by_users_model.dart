@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+///posts done by each users are received in this model
 List<PostByUsersModel> postByUsersModelFromMap(String str) =>
     List<PostByUsersModel>.from(
         json.decode(str).map((x) => PostByUsersModel.fromMap(x)));

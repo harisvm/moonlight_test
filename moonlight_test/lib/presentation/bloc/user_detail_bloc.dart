@@ -9,6 +9,7 @@ part 'user_detail_event.dart';
 
 part 'user_detail_state.dart';
 
+///bloc
 class UserFeedBloc extends Bloc<UserFeedEvent, UserFeedState> {
   @override
   Stream<UserFeedState> mapEventToState(

@@ -8,8 +8,7 @@ import 'package:moonlight_test/data/models/to_dos_by_user_model.dart';
 import 'package:moonlight_test/data/models/user_detail_model.dart';
 import 'package:moonlight_test/domain/entities/app_exceptions.dart';
 import 'package:moonlight_test/domain/entities/rest_api.dart';
-import 'package:moonlight_test/presentation/bloc/user_detail_bloc.dart';
-
+///provider class for all apis
 class UsersApiProvider {
   ///user detail list  -home screen
   Future<List<UserDetailModel>> getUserDetails({Map<String, dynamic> params}) async {
@@ -64,7 +63,7 @@ class UsersApiProvider {
       throw e.message;
     }
   }
-
+///photos by album
   Future<List<PhotosByAlbumModel>> getPhotosByAlbum({Map<String, dynamic> params}) async {
     try {
       var res = await RestAPI()

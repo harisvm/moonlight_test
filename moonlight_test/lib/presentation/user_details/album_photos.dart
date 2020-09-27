@@ -7,6 +7,9 @@ import 'package:moonlight_test/presentation/bloc/user_detail_bloc.dart';
 import 'package:moonlight_test/presentation/widgets/circular_progress.dart';
 import 'package:moonlight_test/presentation/widgets/get_appbar.dart';
 
+
+///photos are showed in list
+///
 class AlbumPhotos extends StatefulWidget {
   static String route = 'albumPhotos';
 
