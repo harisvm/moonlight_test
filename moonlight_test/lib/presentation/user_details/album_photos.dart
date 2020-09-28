@@ -38,29 +38,46 @@ class _AlbumPhotosState extends State<AlbumPhotos> {
             bloc: _userFeedBloc,
             builder: (context, state) {
               if (state is PhotosByAlbumLoaded || state is InitialUserFeedState) {
-                return ListView.builder(
+                return GridView.builder(
                   itemCount: GlobalData.photosByAlbum?.length ?? 0,
+                  padding: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,mainAxisSpacing: 10,crossAxisSpacing: 10,childAspectRatio: .7
+                  ),
+                  shrinkWrap: true,
+
                   itemBuilder: (context, index) {
                     return Card(
+
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                          side: BorderSide(width: 1, color: Colors.green)),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                         ),
                       child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           mainAxisSize: MainAxisSize.max,
 
                           children: [
+
+                            ClipRRect(
+                              borderRadius: BorderRadius.only(topLeft: Radius.circular(10),topRight: Radius.circular(10)),
+                              child: FadeInImage.assetNetwork(
+                                fit: BoxFit.cover,
+                                  placeholder: cupertinoActivityIndicator,
+                                  image: GlobalData.photosByAlbum[index].url),
+                            ),
+
                             Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.only(left:3.0,top: 3,right: 3),
                               child: Text(
                                 GlobalData.photosByAlbum[index].title,
-                                style: _theme.textTheme.headline6
-                                    .copyWith(color: AppColors.purple),
+                                overflow: TextOverflow.ellipsis,
+maxLines: 3,
+                                style: _theme.textTheme.bodyText1
+                                    .copyWith(color: AppColors.black,fontWeight: FontWeight.bold),
                               ),
                             ),
-                            FadeInImage.assetNetwork(
-                                placeholder: cupertinoActivityIndicator,
-                                image: GlobalData.photosByAlbum[index].url)
                           ]),
                     );
                   },

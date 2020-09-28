@@ -20,7 +20,8 @@ class _UserPostsState extends State<UserPosts> {
   UserFeedBloc _userFeedBloc;
   bool isCommentClicked = false;
   int clickedIndex;
-ScrollController _scrollController;
+  ScrollController _scrollController;
+
   @override
   void initState() {
     _userFeedBloc = UserFeedBloc();
@@ -29,7 +30,8 @@ ScrollController _scrollController;
     super.initState();
     _scrollController = ScrollController(
       initialScrollOffset: 0,
-    );  }
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,12 +69,29 @@ ScrollController _scrollController;
                           isCommentClicked && index == clickedIndex,
                       title: Card(
                         elevation: 2.0,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                            side: BorderSide(width: 1, color: Colors.grey)),
                         color: AppColors.white,
                         child: Container(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  IconButton(
+                                    icon: Icon(Icons.perm_identity),
+                                  ),
+                                  Text('User Id ' +
+                                      GlobalData.postListByUser[index].id
+                                          .toString(),style: _theme.textTheme.caption.copyWith(color: AppColors.black,fontWeight: FontWeight.bold),),
+                                  Spacer(),
+                                ],
+                              ),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
@@ -91,12 +110,16 @@ ScrollController _scrollController;
                                   ),
                                 ),
                               ),
+                              IconButton(
+                                icon: Icon(Icons.comment),
+                              ),
+                              Center(child: Text('Comments')),
+                              SizedBox(
+                                height: 10,
+                              )
                             ],
                           ),
                         ),
-                      ),
-                      subtitle: IconButton(
-                        icon: Icon(Icons.comment),
                       ),
                       children: [
                         BlocBuilder(
@@ -109,20 +132,19 @@ ScrollController _scrollController;
                                           ? 3
                                           : GlobalData.commentsOnPost.length,
                                   shrinkWrap: true,
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 5),
                                   itemBuilder: (context, index) {
                                     return Card(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10.0)),
-                                          side: BorderSide(
-                                              width: 1, color: Colors.purple)),
+                                      color: AppColors.lightGray,
+                                      elevation: 2,
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Column(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.center,
+                                                CrossAxisAlignment.stretch,
                                             children: [
                                               Text(
                                                 GlobalData

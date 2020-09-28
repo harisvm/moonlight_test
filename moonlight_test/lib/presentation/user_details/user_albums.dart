@@ -40,10 +40,13 @@ class _UserAlbumsState extends State<UserAlbums> {
                 return GridView.builder(
                   itemCount: GlobalData.albumsByUser?.length ?? 0,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
+                    crossAxisCount: 2,
                   ),
                   itemBuilder: (context, index) {
                     return Card(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(5), ),
+                            side: BorderSide(width: 1, color: Colors.grey)),
                       child: InkWell(
                         onTap: () {
                           print("---$index");
@@ -61,10 +64,13 @@ class _UserAlbumsState extends State<UserAlbums> {
                               Icons.insert_photo,
                             )),
                           ),
-                          header: Text(
-                            GlobalData.albumsByUser[index].title,
-                            style: _theme.textTheme.caption
-                                .copyWith(color: AppColors.black),
+                          header: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Text(
+                              GlobalData.albumsByUser[index].title,
+                              style: _theme.textTheme.caption
+                                  .copyWith(color: AppColors.black,fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ),
                       ),

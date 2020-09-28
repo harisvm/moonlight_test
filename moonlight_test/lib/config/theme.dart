@@ -90,13 +90,15 @@ class AppColors {
   static const black = Color(0xFF222222);
   static const lightGray = Color(0xFFD9D9D9);
   static const darkGray = Color(0xFF979797);
+  static const darkerGray = Color(0xFF808080);
   static const white = Color(0xFFFFFFFF);
   static const orange = Color(0xFFFFBA49);
   static const background = Color(0xFFE5E5E5);
   static const backgroundLight = Color(0xFFF9F9F9);
+  static const backgroundLight2 = Color(0xFFF7F7F7);
   static const transparent = Color(0x00000000);
-  static const success = Color(0xFF2AA952);
-  static const green = Color(0xFF2AA952);
+  static const success = Color(0xFF1AD900);
+  static const green = Color(0xFF3A7328);
   static const lightGreen = Color(0xFFADD8E6);
   static const cyan = Color(0xFF2DACA7);
 

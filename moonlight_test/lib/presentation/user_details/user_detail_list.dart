@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moonlight_test/config/theme.dart';
@@ -22,16 +23,24 @@ class UserDetailList extends StatefulWidget {
   _UserDetailListState createState() => _UserDetailListState();
 }
 
+
 class _UserDetailListState extends State<UserDetailList> {
   UserFeedBloc _userFeedBloc;
-  IconData iconData = Icons.expand_more;
+  bool isExpanded = false;
   int clickedIndex ;
 
   @override
   void initState() {
+
+
     _userFeedBloc = UserFeedBloc();
     _userFeedBloc.add(LoadUsersList());
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
   }
 
   @override
@@ -51,189 +60,239 @@ class _UserDetailListState extends State<UserDetailList> {
                     Address address = GlobalData.userDetailList[index].address;
                     return ExpansionTile(
                       childrenPadding:
-                          EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                       backgroundColor: AppColors.white,
                       title: Card(
                         elevation: 2.0,
-                        color: AppColors.white,
-                        child: Container(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  SizedBox(
-                                      width: 30,
-                                      height: 30,
-                                      child: Image.asset('assets/user.png')),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10), ),
+                            side: BorderSide(width: 1, color: Colors.transparent)),
+                        color: AppColors.backgroundLight2,
+
+
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                              SizedBox(height: 10,),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.baseline,
+                              textBaseline: TextBaseline.alphabetic,
+                              children: [
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                SizedBox(
+                                    width: 25,
+                                    height: 25,
+                                    child: Image.asset('assets/user.png')),
+                                Expanded(
+                                  flex: 6,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left:8.0,),
                                     child: Text(
                                       GlobalData.userDetailList[index].name,
+                                      overflow: TextOverflow.ellipsis,
                                       style:
                                           _theme.textTheme.headline5.copyWith(
                                         color: AppColors.black,
                                       ),
                                     ),
                                   ),
-                                ],
-                              ),
-                              Row(
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top:10.0),
+                              child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.baseline,
+                                textBaseline: TextBaseline.alphabetic,
                                 children: [
                                   SizedBox(
-                                    width: 5,
+                                    width: 10,
                                   ),
                                   SizedBox(
-                                      width: 28,
-                                      height: 28,
+                                      width: 25,
+                                      height: 25,
                                       child: Image.asset('assets/email.png')),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      GlobalData.userDetailList[index].email,
-                                      style:
-                                          _theme.textTheme.headline6.copyWith(
-                                        color: AppColors.darkGray,
+                                  Expanded(
+                                    flex: 6,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left:8.0),
+                                      child: Text(
+                                        GlobalData.userDetailList[index].email,
+                                        overflow: TextOverflow.ellipsis,
+                                        style:
+                                            _theme.textTheme.headline6.copyWith(
+                                          color: AppColors.darkGray,
+                                        ),
                                       ),
                                     ),
                                   ),
+                                  SizedBox(width: 5,)
                                 ],
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 40.0, top: 8, bottom: 5),
-                                child: Text(
-                                  address.city + " \n" + address.street,
-                                  style: _theme.textTheme.bodyText2.copyWith(
-                                    color: AppColors.black,
-                                  ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 45.0, top: 8, bottom: 10),
+                              child: Text(
+                                address.city + " \n" + address.street,
+                                style: _theme.textTheme.bodyText2.copyWith(
+                                  color: AppColors.black,
                                 ),
                               ),
-                            ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      onExpansionChanged: (isExpanded) {
+                        if (isExpanded) {
+                          setState(() {
+                              clickedIndex=index;
+                          });
+                        }
+
+                        else{
+                          setState(() {
+                            clickedIndex =-1;
+                          });
+
+                        }
+                      },
+                      trailing: Padding(
+                        padding: const EdgeInsets.only(top: 25.0),
+                        child: ClipOval(
+                          child: Material(
+                            color: Colors.black, // button color
+                            child: InkWell(
+                              splashColor: Colors.white, // inkwell color
+                              child: SizedBox(
+                                  width: 30,
+                                  height: 30,
+                                  child: Icon(
+                                    index == clickedIndex
+                                        ? Icons.expand_less
+                                        : Icons.expand_more,
+                                    color: AppColors.white,
+                                  )),
+                            ),
                           ),
                         ),
                       ),
-                      trailing: Icon(iconData),
-                        initiallyExpanded: index == clickedIndex,
-                      onExpansionChanged: (isExpanded) {
-                        clickedIndex = index;
-
-                        setState(() {
-                          iconData = isExpanded
-                              ? Icons.expand_less
-                              : Icons.expand_more;
-                        });
-                      },
+                      maintainState: true,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                CustomButton(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(15.0),
-                                    child: Image.asset(
-                                      'assets/post.png',
+                        Padding(
+                          padding: const EdgeInsets.only(left:10.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  CustomButton(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Image.asset(
+                                        'assets/post.png',
+                                      ),
                                     ),
+                                    gradient: LinearGradient(colors: <Color>[
+                                      AppColors.cyan,
+                                      AppColors.cyan
+                                    ]),
+                                    shape: ButtonType.BUTTON_ROUND,
+                                    onPressed: () {
+                                      GlobalData.userId =
+                                          GlobalData.userDetailList[index].id;
+                                      pushNamed(
+                                          context: context,
+                                          routeName: UserPosts.route);
+                                    },
+                                    width: 60,
+                                    height: 70,
                                   ),
-                                  gradient: LinearGradient(colors: <Color>[
-                                    AppColors.cyan,
-                                    AppColors.cyan
-                                  ]),
-                                  shape: ButtonType.BUTTON_ROUND,
-                                  onPressed: () {
-                                    GlobalData.userId =
-                                        GlobalData.userDetailList[index].id;
-                                    pushNamed(
-                                        context: context,
-                                        routeName: UserPosts.route);
-                                  },
-                                  width: 60,
-                                  height: 70,
-                                ),
-                                Text(
-                                  'Posts',
-                                  style: _theme.textTheme.button
-                                      .copyWith(color: AppColors.black),
-                                ),
-                              ],
-                            ),
-                            Spacer(),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                CustomButton(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(15.0),
-                                    child: Image.asset(
-                                      'assets/albums.png',
+                                  Text(
+                                    'Posts',
+                                    style: _theme.textTheme.button
+                                        .copyWith(color: AppColors.black),
+                                  ),
+                                ],
+                              ),
+                              Spacer(),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  CustomButton(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Image.asset(
+                                        'assets/albums.png',
+                                      ),
                                     ),
+                                    gradient: LinearGradient(colors: <Color>[
+                                      AppColors.cyan,
+                                      AppColors.cyan
+                                    ]),
+                                    shape: ButtonType.BUTTON_ROUND,
+                                    onPressed: () {
+                                      GlobalData.userId =
+                                          GlobalData.userDetailList[index].id;
+                                      pushNamed(
+                                          context: context,
+                                          routeName: UserAlbums.route);
+                                    },
+                                    width: 60,
+                                    height: 70,
                                   ),
-                                  gradient: LinearGradient(colors: <Color>[
-                                    AppColors.cyan,
-                                    AppColors.cyan
-                                  ]),
-                                  shape: ButtonType.BUTTON_ROUND,
-                                  onPressed: () {
-                                    GlobalData.userId =
-                                        GlobalData.userDetailList[index].id;
-                                    pushNamed(
-                                        context: context,
-                                        routeName: UserAlbums.route);
-                                  },
-                                  width: 60,
-                                  height: 70,
-                                ),
-                                Text(
-                                  'Albums',
-                                  style: _theme.textTheme.button
-                                      .copyWith(color: AppColors.black),
-                                ),
-                              ],
-                            ),
-                            Spacer(),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                CustomButton(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(15.0),
-                                    child: Image.asset(
-                                      'assets/todo.png',
+                                  Text(
+                                    'Albums',
+                                    style: _theme.textTheme.button
+                                        .copyWith(color: AppColors.black),
+                                  ),
+                                ],
+                              ),
+                              Spacer(),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  CustomButton(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Image.asset(
+                                        'assets/todo.png',
+                                      ),
                                     ),
+                                    gradient: LinearGradient(colors: <Color>[
+                                      AppColors.cyan,
+                                      AppColors.cyan
+                                    ]),
+                                    shape: ButtonType.BUTTON_ROUND,
+                                    onPressed: () {
+                                      GlobalData.userId =
+                                          GlobalData.userDetailList[index].id;
+                                      pushNamed(
+                                          context: context,
+                                          routeName: UserToDos.route);
+                                    },
+                                    width: 60,
+                                    height: 70,
                                   ),
-                                  gradient: LinearGradient(colors: <Color>[
-                                    AppColors.cyan,
-                                    AppColors.cyan
-                                  ]),
-                                  shape: ButtonType.BUTTON_ROUND,
-                                  onPressed: () {
-                                    GlobalData.userId =
-                                        GlobalData.userDetailList[index].id;
-                                    pushNamed(
-                                        context: context,
-                                        routeName: UserToDos.route);
-                                  },
-                                  width: 60,
-                                  height: 70,
-                                ),
-                                Text(
-                                  'To do',
-                                  style: _theme.textTheme.button
-                                      .copyWith(color: AppColors.black),
-                                ),
-                              ],
-                            ),
-                            Spacer(),
-                          ],
+                                  Text(
+                                    'To do',
+                                    style: _theme.textTheme.button
+                                        .copyWith(color: AppColors.black),
+                                  ),
+                                ],
+                              ),
+                              Spacer(),
+                            ],
+                          ),
                         ),
                       ],
                     );
