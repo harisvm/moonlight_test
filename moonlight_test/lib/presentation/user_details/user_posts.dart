@@ -106,7 +106,8 @@ class _UserPostsState extends State<UserPosts> {
                                 child: Text(
                                   GlobalData.postListByUser[index].body,
                                   style: _theme.textTheme.bodyText2.copyWith(
-                                    color: AppColors.purple,
+                                    color: AppColors.black
+                                    ,
                                   ),
                                 ),
                               ),
@@ -132,8 +133,8 @@ class _UserPostsState extends State<UserPosts> {
                                           ? 3
                                           : GlobalData.commentsOnPost.length,
                                   shrinkWrap: true,
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 5),
+                                  padding: EdgeInsets.only(
+                                      left: 20, top: 5,right: 40,bottom: 5),
                                   itemBuilder: (context, index) {
                                     return Card(
                                       color: AppColors.lightGray,
@@ -151,10 +152,10 @@ class _UserPostsState extends State<UserPosts> {
                                                         ?.commentsOnPost[index]
                                                         ?.email ??
                                                     '',
-                                                style: _theme.textTheme.caption
+                                                style: _theme.textTheme.bodyText1
                                                     .copyWith(
                                                         color:
-                                                            AppColors.purple),
+                                                            AppColors.black),
                                               ),
                                               Text(
                                                 GlobalData.commentsOnPost[index]
