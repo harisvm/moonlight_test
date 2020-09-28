@@ -14,7 +14,6 @@ import 'package:moonlight_test/presentation/widgets/pushNamed.dart';
 
 import '../../config/theme.dart';
 
-
 ///home page - user list is being shown here
 class UserDetailList extends StatefulWidget {
   static String route = 'userList';
@@ -25,6 +24,8 @@ class UserDetailList extends StatefulWidget {
 
 class _UserDetailListState extends State<UserDetailList> {
   UserFeedBloc _userFeedBloc;
+  IconData iconData = Icons.expand_more;
+  int clickedIndex ;
 
   @override
   void initState() {
@@ -43,16 +44,15 @@ class _UserDetailListState extends State<UserDetailList> {
         body: BlocBuilder(
             bloc: _userFeedBloc,
             builder: (context, state) {
-              if (state is UsersListLoaded ||
-                  state is InitialUserFeedState) {
+              if (state is UsersListLoaded || state is InitialUserFeedState) {
                 return ListView.separated(
                   itemCount: GlobalData.userDetailList?.length ?? 0,
                   itemBuilder: (context, index) {
-                    Address address =    GlobalData.userDetailList[index].address ;
+                    Address address = GlobalData.userDetailList[index].address;
                     return ExpansionTile(
                       childrenPadding:
                           EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                      backgroundColor: AppColors.lightGray,
+                      backgroundColor: AppColors.white,
                       title: Card(
                         elevation: 2.0,
                         color: AppColors.white,
@@ -61,30 +61,57 @@ class _UserDetailListState extends State<UserDetailList> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  GlobalData.userDetailList[index].name,
-                                  style: _theme.textTheme.bodyText1.copyWith(
-                                      color: AppColors.black,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  GlobalData.userDetailList[index].email,
-                                  style: _theme.textTheme.bodyText2.copyWith(
-                                    color: AppColors.purple,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: 5,
                                   ),
-                                ),
+                                  SizedBox(
+                                      width: 30,
+                                      height: 30,
+                                      child: Image.asset('assets/user.png')),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      GlobalData.userDetailList[index].name,
+                                      style:
+                                          _theme.textTheme.headline5.copyWith(
+                                        color: AppColors.black,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  SizedBox(
+                                      width: 28,
+                                      height: 28,
+                                      child: Image.asset('assets/email.png')),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      GlobalData.userDetailList[index].email,
+                                      style:
+                                          _theme.textTheme.headline6.copyWith(
+                                        color: AppColors.darkGray,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                               Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.only(
+                                    left: 40.0, top: 8, bottom: 5),
                                 child: Text(
-                                  address.city+" \n"+address.street +" \n"+address.zipcode,
+                                  address.city + " \n" + address.street,
                                   style: _theme.textTheme.bodyText2.copyWith(
-                                    color: AppColors.darkGray,
+                                    color: AppColors.black,
                                   ),
                                 ),
                               ),
@@ -92,74 +119,120 @@ class _UserDetailListState extends State<UserDetailList> {
                           ),
                         ),
                       ),
+                      trailing: Icon(iconData),
+                        initiallyExpanded: index == clickedIndex,
+                      onExpansionChanged: (isExpanded) {
+                        clickedIndex = index;
+
+                        setState(() {
+                          iconData = isExpanded
+                              ? Icons.expand_less
+                              : Icons.expand_more;
+                        });
+                      },
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-
-                            CustomButton(
-                              child: Text(
-                                'Posts',
-                                style: _theme.textTheme.button
-                                    .copyWith(color: AppColors.white),
-                              ),
-                              shape: ButtonType.BUTTON_ROUND,
-                              onPressed: () {
-                                GlobalData.userId =
-                                    GlobalData.userDetailList[index].id;
-                                pushNamed(
-                                    context: context,
-                                    routeName: UserPosts.route);
-                              },
-                              width: 60,
-                              height: 70,
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                CustomButton(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(15.0),
+                                    child: Image.asset(
+                                      'assets/post.png',
+                                    ),
+                                  ),
+                                  gradient: LinearGradient(colors: <Color>[
+                                    AppColors.cyan,
+                                    AppColors.cyan
+                                  ]),
+                                  shape: ButtonType.BUTTON_ROUND,
+                                  onPressed: () {
+                                    GlobalData.userId =
+                                        GlobalData.userDetailList[index].id;
+                                    pushNamed(
+                                        context: context,
+                                        routeName: UserPosts.route);
+                                  },
+                                  width: 60,
+                                  height: 70,
+                                ),
+                                Text(
+                                  'Posts',
+                                  style: _theme.textTheme.button
+                                      .copyWith(color: AppColors.black),
+                                ),
+                              ],
                             ),
-
                             Spacer(),
-                            CustomButton(
-                                child: Text(
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                CustomButton(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(15.0),
+                                    child: Image.asset(
+                                      'assets/albums.png',
+                                    ),
+                                  ),
+                                  gradient: LinearGradient(colors: <Color>[
+                                    AppColors.cyan,
+                                    AppColors.cyan
+                                  ]),
+                                  shape: ButtonType.BUTTON_ROUND,
+                                  onPressed: () {
+                                    GlobalData.userId =
+                                        GlobalData.userDetailList[index].id;
+                                    pushNamed(
+                                        context: context,
+                                        routeName: UserAlbums.route);
+                                  },
+                                  width: 60,
+                                  height: 70,
+                                ),
+                                Text(
                                   'Albums',
                                   style: _theme.textTheme.button
-                                      .copyWith(color: AppColors.white),
+                                      .copyWith(color: AppColors.black),
                                 ),
-                                shape: ButtonType.BUTTON_ROUND,
-                                onPressed: () {
-                                  GlobalData.userId =
-                                      GlobalData.userDetailList[index].id;
-                                  pushNamed(
-                                      context: context,
-                                      routeName: UserAlbums.route);
-                                },
-                                width: 60,
-                                height: 70,
-                                gradient: LinearGradient(colors: <Color>[
-                                  AppColors.success,
-                                  AppColors.success
-                                ])),
+                              ],
+                            ),
                             Spacer(),
-
-                            CustomButton(
-                                child: Text(
-                                  'To Do',
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                CustomButton(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(15.0),
+                                    child: Image.asset(
+                                      'assets/todo.png',
+                                    ),
+                                  ),
+                                  gradient: LinearGradient(colors: <Color>[
+                                    AppColors.cyan,
+                                    AppColors.cyan
+                                  ]),
+                                  shape: ButtonType.BUTTON_ROUND,
+                                  onPressed: () {
+                                    GlobalData.userId =
+                                        GlobalData.userDetailList[index].id;
+                                    pushNamed(
+                                        context: context,
+                                        routeName: UserToDos.route);
+                                  },
+                                  width: 60,
+                                  height: 70,
+                                ),
+                                Text(
+                                  'To do',
                                   style: _theme.textTheme.button
-                                      .copyWith(color: AppColors.white),
+                                      .copyWith(color: AppColors.black),
                                 ),
-                                shape: ButtonType.BUTTON_ROUND,
-                                onPressed: () {
-                                  GlobalData.userId =
-                                      GlobalData.userDetailList[index].id;
-                                  pushNamed(
-                                      context: context,
-                                      routeName: UserToDos.route);
-                                },
-                                width: 60,
-                                height: 70,
-                                gradient: LinearGradient(colors: <Color>[
-                                  AppColors.orange,
-                                  AppColors.orange
-                                ])),
+                              ],
+                            ),
                             Spacer(),
-
                           ],
                         ),
                       ],
@@ -172,7 +245,11 @@ class _UserDetailListState extends State<UserDetailList> {
               } else if (state is LoadData) {
                 return Center(child: showCircleProgress());
               } else
-                return Container(child: Center(child: Text('Something went wrong'),),);
+                return Container(
+                  child: Center(
+                    child: Text('Something went wrong'),
+                  ),
+                );
             }));
   }
 }

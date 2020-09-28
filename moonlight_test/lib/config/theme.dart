@@ -98,6 +98,7 @@ class AppColors {
   static const success = Color(0xFF2AA952);
   static const green = Color(0xFF2AA952);
   static const lightGreen = Color(0xFFADD8E6);
+  static const cyan = Color(0xFF2DACA7);
 
   static const purpleDark = Color(0xFF200B53);
   static const purple = Color(0xFF490A9E);
